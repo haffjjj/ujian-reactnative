@@ -38,6 +38,9 @@ class ProfileList extends Component {
                     </Button>
                 </View>
                 <Text style={styles.profileDescription}>{descriptions}</Text>
+                <Button onPress={this.state.navigation.navigate('ProfileEdit',{data: this.props.profileListReducer.profile})}>
+                  <Text>Edit</Text>
+                </Button>
             </View>
         </Card>
 
