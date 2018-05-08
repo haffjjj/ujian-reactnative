@@ -7,13 +7,30 @@ import HighlightItems from '../components/HiglightItems'
 import {getProfileList} from '../actions/profileList'
 
 class ProfileList extends Component {
+
+  state = {
+    profile:{
+      name:'',
+      department: '',
+      univeristy: '',
+      from: '',
+      description: '',
+      higlights: []
+    }
+  }
   
-  componentDidMount(){
-    this.props.dispatch(getProfileList(this.props.navigation.state.params.objectId))
+  componentWillMount(){
+    this.props.dispatch(getProfileList(this.props.navigation.state.params.objectId)).then(()=>{
+
+      //ada masalah saat ngambil state dari redux ada dellay sehingga variabelnya jadi undifinded, saya akali pakai lokal state saat fulfilled
+      this.setState({profile: this.props.profileListReducer.profile})      
+    })
   }
   
   render() {
-    const {image, name, department, univeristy, description,from, highlights} = this.props.profileListReducer.profile
+
+    const {image,name, department, univeristy, description,from, higlights} = this.state.profile
+
     return (
         <Container>
         <Content style={{padding:8}}> 
@@ -23,7 +40,8 @@ class ProfileList extends Component {
             uri: image
           }}/> 
 
-          <Card style={{paddingTop:30}}>
+          <Card style={{paddingTop:30}}> 
+
             <View style={styles.profileCard}>
                 <H3 style={styles.profileName}>{name}</H3>
                 <Text style={styles.profileJab}>{department}</Text>
@@ -37,8 +55,8 @@ class ProfileList extends Component {
                         <Text>Connect</Text>
                     </Button>
                 </View>
-                <Text style={styles.profileDescription}>{descriptions}</Text>
-                <Button onPress={this.state.navigation.navigate('ProfileEdit',{data: this.props.profileListReducer.profile})}>
+                <Text style={styles.profileDescription}>{description}</Text>
+                <Button onPress={()=>this.props.navigation.navigate('ProfileEdit',{data: this.props.profileListReducer.profile})}>
                   <Text>Edit</Text>
                 </Button>
             </View>
@@ -48,7 +66,7 @@ class ProfileList extends Component {
             <Text note>Highlight</Text>
             <List>
             
-            <HighlightItems items={highlights}/>
+            <HighlightItems items={higlights}/>
 
           </List>
         </Card>
